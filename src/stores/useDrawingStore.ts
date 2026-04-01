@@ -9,6 +9,7 @@ interface DrawingStoreState {
 
 interface DrawingStoreAction {
   addElement: (element: DrawingElement) => void;
+  removeElements: (elementIds: string[]) => void;
   undo: () => void;
   redo: () => void;
 }
@@ -27,6 +28,18 @@ export const useDrawingStore = create<DrawingStoreType>()(
         set({
           elements: [...previous, element],
           undoStack: [...get().undoStack, previous],
+          redoStack: [],
+        });
+      },
+
+      removeElements: (elementId) => {
+        const prev = get().elements;
+        const current = get().elements.filter(
+          (elem) => !elementId.includes(elem.id),
+        );
+        set({
+          elements: current,
+          undoStack: [...get().undoStack, prev],
           redoStack: [],
         });
       },

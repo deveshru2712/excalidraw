@@ -6,6 +6,7 @@ interface Point {
 }
 
 interface DrawingElement {
+  id: string;
   type: Tool;
   points: Point[];
   strokeColor: string;
