@@ -77,18 +77,38 @@ const strokeSettingConfig = {
       { id: 3, value: 14, icon: <Minus strokeWidth={5} className="size-4" /> },
     ],
   },
+  text: {
+    stroke: ["black", "red", "green", "blue", "yellow"],
+    strokeWidth: [
+      {
+        id: 1,
+        value: 16,
+        icon: <Minus strokeWidth={1} className="size-4" />,
+      },
+      {
+        id: 2,
+        value: 24,
+        icon: <Minus strokeWidth={3} className="size-4" />,
+      },
+      {
+        id: 3,
+        value: 32,
+        icon: <Minus strokeWidth={5} className="size-4" />,
+      },
+    ],
+  },
 };
 
 export default function ToolSettingMenu() {
   const tool = useToolStore((state) => state.tool);
+  const fontSize = useToolStore((state) => state.fontSize);
   const strokeColor = useToolStore((state) => state.strokeColor);
   const strokeWidth = useToolStore((state) => state.strokeWidth);
   const strokeStyle = useToolStore((state) => state.strokeStyle);
   const setStrokeColor = useToolStore((state) => state.setStrokeColor);
   const setStrokeWidth = useToolStore((state) => state.setStrokeWidth);
   const setStrokeStyle = useToolStore((state) => state.setStrokeStyle);
-
-  if (tool !== "pencil" && tool !== "eraser") return null;
+  const setFontSize = useToolStore((state) => state.setFontSize);
 
   const config = strokeSettingConfig[tool];
 
@@ -104,7 +124,7 @@ export default function ToolSettingMenu() {
                   key={color}
                   variant="ghost"
                   onClick={() => setStrokeColor(color)}
-                  className={`h-7 cursor-pointer rounded-sm border p-0 hover:bg-transparent ${strokeColor === color ? "ring-2 ring-black" : ""}`}
+                  className={`h-7 cursor-pointer rounded-sm border p-0 hover:bg-transparent ${strokeColor === color ? `ring-2 ring-black` : ""}`}
                 >
                   <div
                     className="size-6 rounded-sm"
@@ -123,8 +143,14 @@ export default function ToolSettingMenu() {
               <Button
                 key={width.id}
                 variant="outline"
-                onClick={() => setStrokeWidth(width.value)}
-                className={`h-7 cursor-pointer rounded-sm px-1.25 ${strokeWidth === width.value ? "bg-accent" : ""}`}
+                onClick={() => {
+                  if (tool === "text") {
+                    setFontSize(width.value);
+                  } else {
+                    setStrokeWidth(width.value);
+                  }
+                }}
+                className={`h-7 cursor-pointer rounded-sm px-1.25 ${(tool === "text" ? fontSize : strokeWidth) === width.value ? "bg-accent" : ""}`}
               >
                 <span className="cursor-pointer text-[10px]">{width.icon}</span>
               </Button>

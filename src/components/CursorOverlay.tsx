@@ -10,14 +10,17 @@ export default function CursorOverlay() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      if (target.tagName !== "CANVAS") {
+
+      if (!target.closest("canvas")) {
         setVisible(false);
         return;
       }
+
       setVisible(true);
       setMouseX(e.clientX);
       setMouseY(e.clientY);
     };
+
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
@@ -35,6 +38,22 @@ export default function CursorOverlay() {
         }}
       >
         <Pencil />
+      </div>
+    );
+  }
+
+  if (tool === "text") {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          left: mouseX,
+          top: mouseY,
+          transform: "translate(-50%, -50%)",
+          pointerEvents: "none",
+        }}
+      >
+        <Type />
       </div>
     );
   }
@@ -106,6 +125,20 @@ const Pencil = () => {
           strokeLinecap="round"
         />
       </g>
+    </svg>
+  );
+};
+
+// ✅ Proper text cursor (I-beam)
+const Type = () => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24">
+      <path
+        d="M10 4H14M10 20H14M12 4V20"
+        stroke="black"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
     </svg>
   );
 };

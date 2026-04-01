@@ -1,7 +1,9 @@
 import { useDrawingStore } from "@/stores/useDrawingStore";
 import { useToolStore } from "@/stores/useToolStore";
-import { applyStrokeStyle } from "@/utils/applyStrokeStyle";
+import applyStrokeStyle from "@/utils/ApplyStrokeStyle";
 import { useEffect, useRef } from "react";
+
+import GetElementsToErase from "@/utils/GetElementToErase";
 
 export default function Canvas() {
   const drawingStore = useDrawingStore();
@@ -9,6 +11,9 @@ export default function Canvas() {
   const elements = useDrawingStore((state) => state.elements);
 
   const erasedIdsRef = useRef<Set<string>>(new Set());
+
+  const activeInputRef = useRef<HTMLInputElement | null>(null);
+  const activeInputPositionRef = useRef<Point>({ x: 0, y: 0 });
 
   function redraw(skipIds: Set<string> = new Set()) {
     const canvas = canvasRef.current;
@@ -50,6 +55,10 @@ export default function Canvas() {
         ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
         ctx.stroke();
         ctx.setLineDash([]);
+      } else if (element.type === "text") {
+        ctx.font = `${element.fontSize}px 'Shantell Sans'`;
+        ctx.fillStyle = element.strokeColor;
+        ctx.fillText(element.content, element.point.x, element.point.y);
       }
     });
   }
@@ -62,29 +71,28 @@ export default function Canvas() {
     strokeColor: toolStore.strokeColor,
     strokeWidth: toolStore.strokeWidth,
     strokeStyle: toolStore.strokeStyle,
+    fontSize: toolStore.fontSize,
   });
 
-  function getElementsToErase(
-    elements: DrawingElement[],
-    eraserX: number,
-    eraserY: number,
-    eraserRadius: number,
-  ): string[] {
-    const res: string[] = [];
-    for (let i = 0; i < elements.length; i++) {
-      for (let j = 0; j < elements[i].points.length; j++) {
-        const point = elements[i].points[j];
-        const isContacted = Math.sqrt(
-          (point.x - eraserX) ** 2 + (point.y - eraserY) ** 2,
-        );
-        if (isContacted < eraserRadius) {
-          res.push(elements[i].id);
-          break;
-        }
-      }
+  // add text if the user prematurely switches tool
+  useEffect(() => {
+    const { addElement, strokeColor } = storeRef.current;
+    const x = activeInputPositionRef.current.x;
+    const y = activeInputPositionRef.current.y;
+    if (activeInputRef.current && activeInputRef.current.value.length > 0) {
+      const id = crypto.randomUUID();
+      addElement({
+        id,
+        type: "text",
+        point: { x, y },
+        strokeColor,
+        fontSize: storeRef.current.fontSize,
+        content: activeInputRef.current.value,
+      });
     }
-    return res;
-  }
+    activeInputRef.current?.remove();
+    activeInputRef.current = null;
+  }, [toolStore.tool]);
 
   useEffect(() => {
     storeRef.current = {
@@ -95,6 +103,7 @@ export default function Canvas() {
       strokeColor: toolStore.strokeColor,
       strokeWidth: toolStore.strokeWidth,
       strokeStyle: toolStore.strokeStyle,
+      fontSize: toolStore.fontSize,
     };
   }, [
     toolStore.tool,
@@ -104,6 +113,7 @@ export default function Canvas() {
     toolStore.strokeColor,
     toolStore.strokeWidth,
     toolStore.strokeStyle,
+    toolStore.fontSize,
   ]);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -153,10 +163,11 @@ export default function Canvas() {
     const handleMouseDown = (e: MouseEvent) => {
       const { x, y } = getCoords(e);
       isActive.current = true;
-      const { tool, strokeWidth } = storeRef.current;
+      const { tool, strokeWidth, strokeColor, addElement } = storeRef.current;
 
       if (tool === "eraser") {
-        const list = getElementsToErase(
+        const list = GetElementsToErase(
+          ctxRef.current!,
           storeRef.current.elements,
           x,
           y,
@@ -168,6 +179,39 @@ export default function Canvas() {
         lastPoint.current = { x, y };
         lastMid.current = { x, y };
         currentPoints.current = [];
+      } else if (tool === "text") {
+        activeInputPositionRef.current.x = x;
+        activeInputPositionRef.current.y = y;
+
+        const inputElem = document.createElement("input");
+        activeInputRef.current = inputElem;
+        inputElem.style.position = "fixed";
+        inputElem.style.left = `${x}px`;
+        inputElem.style.top = `${y}px`;
+        inputElem.style.color = strokeColor;
+        inputElem.style.font = `${storeRef.current.fontSize}px 'Shantell Sans'`;
+        document.body.appendChild(inputElem);
+        inputElem.addEventListener("mousedown", (e) => {
+          e.stopPropagation();
+        });
+        inputElem.focus();
+        setTimeout(() => inputElem.focus(), 0);
+        inputElem.addEventListener("keydown", (e: KeyboardEvent) => {
+          if (e.key === "Enter") {
+            const id = crypto.randomUUID();
+            addElement({
+              id,
+              type: "text",
+              point: { x, y },
+              strokeColor,
+              fontSize: storeRef.current.fontSize,
+              content: inputElem.value,
+            });
+            document.body.removeChild(inputElem);
+            activeInputPositionRef.current.x = 0;
+            activeInputPositionRef.current.y = 0;
+          }
+        });
       }
     };
 
@@ -203,7 +247,8 @@ export default function Canvas() {
         lastPoint.current = { x, y };
         currentPoints.current.push({ x, y });
       } else if (tool === "eraser") {
-        const list = getElementsToErase(
+        const list = GetElementsToErase(
+          ctxRef.current!,
           storeRef.current.elements,
           x,
           y,
@@ -230,18 +275,18 @@ export default function Canvas() {
         removeElement([...erasedIdsRef.current]);
         erasedIdsRef.current.clear();
         return;
+      } else if (tool === "pencil") {
+        if (currentPoints.current.length === 0) return;
+        addElement({
+          id: crypto.randomUUID(),
+          type: "pencil",
+          points: currentPoints.current,
+          strokeColor,
+          strokeWidth,
+          strokeStyle,
+        });
+        currentPoints.current = [];
       }
-
-      if (currentPoints.current.length === 0) return;
-      addElement({
-        id: crypto.randomUUID(),
-        type: tool,
-        points: currentPoints.current,
-        strokeColor,
-        strokeWidth,
-        strokeStyle,
-      });
-      currentPoints.current = [];
     };
 
     canvas.addEventListener("mousedown", handleMouseDown);
@@ -260,6 +305,9 @@ export default function Canvas() {
   }, [elements]);
 
   return (
-    <canvas ref={canvasRef} className="fixed z-0 cursor-none bg-neutral-100" />
+    <canvas
+      ref={canvasRef}
+      className="relative z-0 cursor-none bg-neutral-100"
+    />
   );
 }

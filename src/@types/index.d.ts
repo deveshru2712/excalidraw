@@ -5,11 +5,22 @@ interface Point {
   y: number;
 }
 
-interface DrawingElement {
+interface PencilElement {
   id: string;
-  type: Tool;
+  type: "pencil";
   points: Point[];
   strokeColor: string;
   strokeWidth: number;
-  strokeStyle: "solid" | "dashed" | "dotted";
+  strokeStyle: string;
 }
+
+interface TextElement {
+  id: string;
+  type: "text";
+  point: Point;
+  strokeColor: string;
+  fontSize: number;
+  content: string;
+}
+
+type DrawingElement = PencilElement | TextElement;

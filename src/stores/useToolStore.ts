@@ -4,14 +4,16 @@ interface toolsStoreState {
   tool: Tool;
   strokeWidth: number;
   strokeColor: string;
-  strokeStyle: "solid" | "dashed" | "dotted";
+  strokeStyle: string;
+  fontSize: number;
 }
 
 interface toolStoreAction {
   setTool: (tool: Tool) => void;
   setStrokeWidth: (width: number) => void;
   setStrokeColor: (color: string) => void;
-  setStrokeStyle: (style: "solid" | "dashed" | "dotted") => void;
+  setStrokeStyle: (style: string) => void;
+  setFontSize: (size: number) => void;
 }
 
 type toolStoreType = toolsStoreState & toolStoreAction;
@@ -21,8 +23,12 @@ export const useToolStore = create<toolStoreType>((set) => ({
   strokeWidth: 4,
   strokeColor: "black",
   strokeStyle: "solid",
+  fontSize: 12,
   setTool: (tool) => set({ tool }),
   setStrokeWidth: (width) => set({ strokeWidth: width }),
   setStrokeColor: (color) => set({ strokeColor: color }),
   setStrokeStyle: (style) => set({ strokeStyle: style }),
+  setFontSize: (size) => {
+    set({ fontSize: size });
+  },
 }));

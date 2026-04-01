@@ -1,6 +1,6 @@
-export function applyStrokeStyle(
+function ApplyStrokeStyle(
   ctx: CanvasRenderingContext2D,
-  style: "solid" | "dashed" | "dotted",
+  style: string,
   width: number,
 ) {
   if (style === "solid") {
@@ -11,3 +11,5 @@ export function applyStrokeStyle(
     ctx.setLineDash([width, width * 2]);
   }
 }
+
+export default ApplyStrokeStyle;
