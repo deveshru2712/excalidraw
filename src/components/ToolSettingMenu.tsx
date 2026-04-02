@@ -98,6 +98,7 @@ const strokeSettingConfig = {
       },
     ],
   },
+  grab: {},
 };
 
 export default function ToolSettingMenu() {
@@ -112,6 +113,8 @@ export default function ToolSettingMenu() {
   const setFontSize = useToolStore((state) => state.setFontSize);
 
   const config = strokeSettingConfig[tool];
+
+  if (!config || Object.keys(config).length === 0) return null;
 
   return (
     <div className="text-muted-foreground fixed top-1/2 left-10 z-50 flex -translate-y-1/2 rounded-sm border bg-white p-1 font-mono shadow">
@@ -140,22 +143,25 @@ export default function ToolSettingMenu() {
         <div className="space-y-1">
           <h4 className="text-[8px]">Stroke width</h4>
           <div className="flex w-fit justify-between gap-1">
-            {config.strokeWidth.map((width) => (
-              <Button
-                key={width.id}
-                variant="outline"
-                onClick={() => {
-                  if (tool === "text") {
-                    setFontSize(width.value);
-                  } else {
-                    setStrokeWidth(width.value);
-                  }
-                }}
-                className={`h-7 cursor-pointer rounded-sm px-1.25 ${(tool === "text" ? fontSize : strokeWidth) === width.value ? "bg-accent" : ""}`}
-              >
-                <span className="cursor-pointer text-[10px]">{width.icon}</span>
-              </Button>
-            ))}
+            {"strokeWidth" in config &&
+              config.strokeWidth.map((width) => (
+                <Button
+                  key={width.id}
+                  variant="outline"
+                  onClick={() => {
+                    if (tool === "text") {
+                      setFontSize(width.value);
+                    } else {
+                      setStrokeWidth(width.value);
+                    }
+                  }}
+                  className={`h-7 cursor-pointer rounded-sm px-1.25 ${(tool === "text" ? fontSize : strokeWidth) === width.value ? "bg-accent" : ""}`}
+                >
+                  <span className="cursor-pointer text-[10px]">
+                    {width.icon}
+                  </span>
+                </Button>
+              ))}
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import { useDrawingStore } from "@/stores/useDrawingStore";
 import { useToolStore } from "@/stores/useToolStore";
 import applyStrokeStyle from "@/utils/ApplyStrokeStyle";
 import GetElementsToErase from "@/utils/GetElementToErase";
+import GetElementToMove from "@/utils/GetElementToMove";
 
 export default function Canvas() {
   const drawingStore = useDrawingStore();
@@ -155,6 +156,7 @@ export default function Canvas() {
     ctxRef.current = ctx;
   }, []);
 
+  const threshold = 8;
   // actual writing and erasing logic
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -212,6 +214,19 @@ export default function Canvas() {
             activeInputPositionRef.current.y = 0;
           }
         });
+      } else if (tool === "grab") {
+        const point = GetElementToMove(
+          ctxRef.current!,
+          storeRef.current.elements,
+          x,
+          y,
+          threshold
+        );
+        if (point) {
+          console.log(point);
+        } else {
+          console.log("wasted");
+        }
       }
     };
 
@@ -304,10 +319,5 @@ export default function Canvas() {
     redraw();
   }, [elements]);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      className="relative z-0 cursor-none bg-neutral-100"
-    />
-  );
+  return <canvas ref={canvasRef} className="z-0 cursor-none bg-neutral-100" />;
 }

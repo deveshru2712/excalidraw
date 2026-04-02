@@ -6,7 +6,7 @@ import UtilsMenu from "@/components/UtilsMenu";
 
 function App() {
   return (
-    <div className="h-screen w-full">
+    <div className="relative h-screen w-full">
       <ToolsMenu />
       <Canvas />
       <CursorOverlay />

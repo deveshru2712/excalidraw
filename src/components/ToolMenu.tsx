@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 
-import { Eraser, Pencil } from "lucide-react";
+import { Eraser, Hand, Pencil } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useToolStore } from "@/stores/useToolStore";
 
 const Tools = [
-  { id: 1, icon: Pencil, tooltip: "Pencil", value: "pencil" as const },
-  { id: 2, icon: "T", tooltip: "Text", value: "text" as const },
-  { id: 3, icon: Eraser, tooltip: "Eraser", value: "eraser" as const },
+  { id: 1, icon: Pencil, value: "pencil" as const },
+  { id: 2, icon: "T", value: "text" as const },
+  { id: 3, icon: Eraser, value: "eraser" as const },
+  { id: 4, icon: Hand, value: "grab" as const },
 ];
 
 export default function ToolsMenu() {

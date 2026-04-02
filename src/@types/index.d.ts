@@ -1,4 +1,4 @@
-type Tool = "pencil" | "eraser" | "text";
+type Tool = "pencil" | "eraser" | "text" | "grab";
 
 interface Point {
   x: number;

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { Hand } from "lucide-react";
+
 import { useToolStore } from "@/stores/useToolStore";
 
 export default function CursorOverlay() {
@@ -35,6 +37,7 @@ export default function CursorOverlay() {
           position: "fixed",
           left: mouseX - 2,
           top: mouseY - 20,
+          zIndex: 20,
           pointerEvents: "none",
         }}
       >
@@ -51,6 +54,7 @@ export default function CursorOverlay() {
           left: mouseX,
           top: mouseY,
           transform: "translate(-50%, -50%)",
+          zIndex: 20,
           pointerEvents: "none",
         }}
       >
@@ -67,10 +71,29 @@ export default function CursorOverlay() {
           left: mouseX,
           top: mouseY,
           transform: "translate(-50%, -50%)",
+          zIndex: 20,
           pointerEvents: "none",
         }}
       >
         <Eraser />
+      </div>
+    );
+  }
+
+  if (tool === "grab") {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          left: mouseX,
+          top: mouseY,
+          transform: "translate(-50%, -50%)",
+          zIndex: 20,
+          pointerEvents: "none",
+          cursor: "pointer",
+        }}
+      >
+        <Hand />
       </div>
     );
   }
@@ -130,7 +153,6 @@ const Pencil = () => {
   );
 };
 
-// ✅ Proper text cursor (I-beam)
 const Type = () => {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24">
