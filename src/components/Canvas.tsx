@@ -295,8 +295,8 @@ export default function Canvas() {
         // calling the udpate function
         storeRef.current.updateElement(
           draggedElementIdRef.current,
-          x + delta.x,
-          y + delta.y
+          delta.x,
+          delta.y
         );
 
         // updating the co ordinates
