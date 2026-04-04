@@ -98,7 +98,9 @@ const strokeSettingConfig = {
       },
     ],
   },
-  grab: {},
+  drag: {},
+  rectangle: {},
+  circle: {},
 };
 
 export default function ToolSettingMenu() {

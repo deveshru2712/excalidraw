@@ -80,7 +80,7 @@ export default function CursorOverlay() {
     );
   }
 
-  if (tool === "grab") {
+  if (tool === "drag") {
     return (
       <div
         style={{
@@ -94,6 +94,23 @@ export default function CursorOverlay() {
         }}
       >
         <Hand />
+      </div>
+    );
+  }
+
+  if (tool === "rectangle" || tool === "circle") {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          left: mouseX,
+          top: mouseY,
+          transform: "translate(-50%, -50%)",
+          zIndex: 20,
+          pointerEvents: "none",
+        }}
+      >
+        <ShapeCursor />
       </div>
     );
   }
@@ -188,6 +205,19 @@ const Eraser = () => {
         stroke="black"
         strokeWidth="1.2"
       />
+    </svg>
+  );
+};
+
+const ShapeCursor = () => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24">
+      {/* crosshair */}
+      <line x1="12" y1="2" x2="12" y2="22" stroke="black" strokeWidth="1.5" />
+      <line x1="2" y1="12" x2="22" y2="12" stroke="black" strokeWidth="1.5" />
+
+      {/* center dot */}
+      <circle cx="12" cy="12" r="2" fill="black" />
     </svg>
   );
 };

@@ -223,7 +223,7 @@ export default function Canvas() {
             activeInputPositionRef.current.y = 0;
           }
         });
-      } else if (tool === "grab") {
+      } else if (tool === "drag") {
         const point = GetElementToMove(
           ctxRef.current!,
           storeRef.current.elements,
@@ -282,7 +282,7 @@ export default function Canvas() {
         );
         list.forEach((id) => erasedIdsRef.current.add(id));
         redraw(erasedIdsRef.current);
-      } else if (tool === "grab") {
+      } else if (tool === "drag") {
         // meaning none element is selected
         if (!draggedElementIdRef.current) return;
 
@@ -332,7 +332,7 @@ export default function Canvas() {
           strokeStyle,
         });
         currentPoints.current = [];
-      } else if (tool === "grab") {
+      } else if (tool === "drag") {
         // resetting the dragged element
         draggedElementIdRef.current = null;
         draggedElementSnapShotRef.current = { x: 0, y: 0 };
