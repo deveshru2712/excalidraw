@@ -1,3 +1,5 @@
+import isPointNearSegment from "@/utils/pointToSegmentDistance";
+
 function GetElementToErase(
   ctx: CanvasRenderingContext2D,
   elements: DrawingElement[],
@@ -17,6 +19,42 @@ function GetElementToErase(
         eraserX < elem.point.x + width &&
         elem.point.y - elem.fontSize < eraserY &&
         eraserY < elem.point.y
+      ) {
+        res.push(elem.id);
+      }
+    } else if (elements[i].type === "shape") {
+      // for shapes
+      const elem = elements[i] as RectangelElement;
+
+      if (
+        isPointNearSegment(
+          { x: elem.point.x, y: elem.point.y },
+          { x: elem.point.x + elem.width, y: elem.point.y },
+          eraserX,
+          eraserY,
+          eraserRadius
+        ) ||
+        isPointNearSegment(
+          { x: elem.point.x, y: elem.point.y + elem.height },
+          { x: elem.point.x + elem.width, y: elem.point.y + elem.height },
+          eraserX,
+          eraserY,
+          eraserRadius
+        ) ||
+        isPointNearSegment(
+          { x: elem.point.x, y: elem.point.y },
+          { x: elem.point.x, y: elem.point.y + elem.height },
+          eraserX,
+          eraserY,
+          eraserRadius
+        ) ||
+        isPointNearSegment(
+          { x: elem.point.x + elem.width, y: elem.point.y },
+          { x: elem.point.x + elem.width, y: elem.point.y + elem.height },
+          eraserX,
+          eraserY,
+          eraserRadius
+        )
       ) {
         res.push(elem.id);
       }
