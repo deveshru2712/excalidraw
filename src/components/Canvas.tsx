@@ -24,6 +24,9 @@ export default function Canvas() {
   // for rectangel element
   const rectangelElementSnapShotRef = useRef<Point>({ x: 0, y: 0 });
 
+  // for circle element
+  const circleElmentCenterRef = useRef<Point>({ x: 0, y: 0 });
+
   function redraw(skipIds: Set<string> = new Set()) {
     const canvas = canvasRef.current;
     const ctx = ctxRef.current;
@@ -78,6 +81,20 @@ export default function Canvas() {
           element.width,
           element.height
         );
+      } else if (element.type === "circle") {
+        ctx.strokeStyle = element.strokeColor;
+        ctx.lineWidth = element.strokeWidth;
+        ApplyDashedStyle(ctx, element.strokeDash, element.strokeWidth);
+        ctx.beginPath();
+        ctx.arc(
+          element.center.x,
+          element.center.y,
+          element.radius,
+          0,
+          Math.PI * 2
+        );
+        ctx.stroke();
+        ctx.setLineDash([]);
       }
     });
   }
@@ -257,6 +274,10 @@ export default function Canvas() {
         // saving snapshot for rectangle element
         rectangelElementSnapShotRef.current.x = x;
         rectangelElementSnapShotRef.current.y = y;
+      } else if (tool === "circle") {
+        // saving the center snapshot for circle elmenet
+        circleElmentCenterRef.current.x = x;
+        circleElmentCenterRef.current.y = y;
       }
     };
 
@@ -341,6 +362,35 @@ export default function Canvas() {
           w,
           h
         );
+      } else if (tool === "circle") {
+        if (!ctxRef.current) return;
+
+        const center: Point = { x: 0, y: 0 };
+
+        // calculating the center
+        center.x = (circleElmentCenterRef.current.x + x) / 2;
+        center.y = (circleElmentCenterRef.current.y + y) / 2;
+
+        // calculating the center
+        const radius = Math.sqrt(
+          (circleElmentCenterRef.current.x - center.x) ** 2 +
+            (circleElmentCenterRef.current.y - center.y) ** 2
+        );
+
+        redraw();
+
+        ctx.strokeStyle = storeRef.current.strokeColor;
+        ctx.lineWidth = storeRef.current.strokeWidth;
+        ApplyDashedStyle(
+          ctx,
+          storeRef.current.strokeDash,
+          storeRef.current.strokeWidth
+        );
+
+        ctx.beginPath();
+        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
       }
     };
 
@@ -395,6 +445,35 @@ export default function Canvas() {
         // reseting the rectangle snapshot
         rectangelElementSnapShotRef.current.x = 0;
         rectangelElementSnapShotRef.current.y = 0;
+      } else if (tool === "circle") {
+        const center: Point = { x: 0, y: 0 };
+
+        // calculating the center
+        center.x = (circleElmentCenterRef.current.x + x) / 2;
+        center.y = (circleElmentCenterRef.current.y + y) / 2;
+
+        // calculating the center
+        const radius = Math.sqrt(
+          (circleElmentCenterRef.current.x - center.x) ** 2 +
+            (circleElmentCenterRef.current.y - center.y) ** 2
+        );
+
+        addElement({
+          id: crypto.randomUUID(),
+          type: "circle",
+          center: {
+            x: center.x,
+            y: center.y,
+          },
+          radius,
+          strokeColor,
+          strokeWidth,
+          strokeDash,
+        });
+
+        // reseting the circle ref
+        circleElmentCenterRef.current.x = 0;
+        circleElmentCenterRef.current.y = 0;
       }
     };
 
