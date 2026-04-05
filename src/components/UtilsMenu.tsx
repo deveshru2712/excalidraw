@@ -9,7 +9,7 @@ export default function UtilsMenu() {
   const setIsPanning = useDrawingStore((state) => state.setIsPanning);
 
   return (
-    <div className="fixed bottom-10 left-20 z-50 flex rounded-md border bg-white p-0.5 shadow">
+    <div className="fixed right-2 bottom-2 z-50 flex rounded-md border bg-white p-0.5 shadow">
       <Button onClick={undo} className="cursor-pointer" variant="ghost">
         <Undo className="size-4" />
       </Button>

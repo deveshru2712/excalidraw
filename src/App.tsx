@@ -3,6 +3,7 @@ import CursorOverlay from "@/components/CursorOverlay";
 import ToolsMenu from "@/components/ToolMenu";
 import ToolSettingMenu from "@/components/ToolSettingMenu";
 import UtilsMenu from "@/components/UtilsMenu";
+import ZoomMenu from "@/components/ZoomMenu";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <ToolsMenu />
       <Canvas />
       <CursorOverlay />
+      <ZoomMenu />
       <ToolSettingMenu />
       <UtilsMenu />
     </div>

@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import {
   Circle,
   Eraser,
@@ -25,11 +23,9 @@ const Tools = [
 
 export default function ToolsMenu() {
   const { tool, setTool } = useToolStore();
-  useEffect(() => {
-    console.log("here is the selected tool", tool);
-  }, [tool]);
+
   return (
-    <div className="fixed top-5 left-1/2 z-50 flex -translate-x-1/2 rounded-md border bg-white p-0.5 shadow">
+    <div className="fixed bottom-5 left-1/2 z-50 flex -translate-x-1/2 rounded-md border bg-white p-0.5 shadow">
       {Tools.map((t) => {
         const Icon = t.icon;
 
@@ -37,7 +33,10 @@ export default function ToolsMenu() {
           <Button
             key={t.id}
             onClick={() => setTool(t.value)}
-            className={cn("cursor-pointer", tool === t.value && "bg-black/10")}
+            className={cn(
+              "cursor-pointer",
+              tool === t.value && "bg-blue-500 text-white"
+            )}
             variant="ghost"
           >
             {typeof Icon === "string" ? (
