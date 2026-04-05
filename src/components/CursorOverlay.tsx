@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { Hand } from "lucide-react";
+import { Hand, MousePointerClick } from "lucide-react";
 
 import { useToolStore } from "@/stores/useToolStore";
 
@@ -111,6 +111,23 @@ export default function CursorOverlay() {
         }}
       >
         <ShapeCursor />
+      </div>
+    );
+  }
+
+  if (tool === "pan") {
+    return (
+      <div
+        style={{
+          position: "fixed",
+          left: mouseX,
+          top: mouseY,
+          transform: "translate(-50%, -50%)",
+          zIndex: 20,
+          pointerEvents: "none",
+        }}
+      >
+        <MousePointerClick />
       </div>
     );
   }

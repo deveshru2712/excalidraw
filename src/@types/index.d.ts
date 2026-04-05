@@ -1,4 +1,11 @@
-type Tool = "pencil" | "eraser" | "text" | "drag" | "rectangle" | "circle";
+type Tool =
+  | "pencil"
+  | "eraser"
+  | "text"
+  | "drag"
+  | "rectangle"
+  | "circle"
+  | "pan";
 
 interface Point {
   x: number;

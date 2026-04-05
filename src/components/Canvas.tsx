@@ -27,6 +27,10 @@ export default function Canvas() {
   // for circle element
   const circleElmentCenterRef = useRef<Point>({ x: 0, y: 0 });
 
+  // for panning canvas
+  const lastPanningSnapShot = useRef<Point>({ x: 0, y: 0 });
+  const panningOffset = useRef<Point>({ x: 0, y: 0 });
+
   function redraw(skipIds: Set<string> = new Set()) {
     const canvas = canvasRef.current;
     const ctx = ctxRef.current;
@@ -34,6 +38,9 @@ export default function Canvas() {
 
     const dpr = window.devicePixelRatio || 1;
     ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    // saving the current state
+    ctx.save();
+    ctx.translate(panningOffset.current.x, panningOffset.current.y);
 
     storeRef.current.elements.forEach((element) => {
       if (skipIds.has(element.id)) return;
@@ -97,6 +104,7 @@ export default function Canvas() {
         ctx.setLineDash([]);
       }
     });
+    ctx.restore();
   }
 
   const storeRef = useRef({
@@ -278,6 +286,9 @@ export default function Canvas() {
         // saving the center snapshot for circle elmenet
         circleElmentCenterRef.current.x = x;
         circleElmentCenterRef.current.y = y;
+      } else if (tool === "pan") {
+        lastPanningSnapShot.current.x = x;
+        lastPanningSnapShot.current.y = y;
       }
     };
 
@@ -391,6 +402,17 @@ export default function Canvas() {
         ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
         ctx.stroke();
         ctx.setLineDash([]);
+      } else if (tool === "pan") {
+        // calculating the offset
+        const offsetX = x - lastPanningSnapShot.current.x;
+        const offsetY = y - lastPanningSnapShot.current.y;
+
+        panningOffset.current.x = panningOffset.current.x + offsetX;
+        panningOffset.current.y = panningOffset.current.y + offsetY;
+
+        lastPanningSnapShot.current.x = x;
+        lastPanningSnapShot.current.y = y;
+        redraw();
       }
     };
 
@@ -474,6 +496,8 @@ export default function Canvas() {
         // reseting the circle ref
         circleElmentCenterRef.current.x = 0;
         circleElmentCenterRef.current.y = 0;
+      } else if (tool === "pan") {
+        // redraw();
       }
     };
 

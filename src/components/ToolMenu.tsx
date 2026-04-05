@@ -4,6 +4,7 @@ import {
   Circle,
   Eraser,
   Hand,
+  MousePointerClick,
   Pencil,
   RectangleHorizontal,
 } from "lucide-react";
@@ -19,6 +20,7 @@ const Tools = [
   { id: 4, icon: Hand, value: "drag" as const },
   { id: 5, icon: RectangleHorizontal, value: "rectangle" as const },
   { id: 6, icon: Circle, value: "circle" as const },
+  { id: 7, icon: MousePointerClick, value: "pan" as const },
 ];
 
 export default function ToolsMenu() {

@@ -19,7 +19,7 @@ interface toolStoreAction {
 type toolStoreType = toolsStoreState & toolStoreAction;
 
 export const useToolStore = create<toolStoreType>((set) => ({
-  tool: "pencil",
+  tool: "pan",
   strokeWidth: 4,
   strokeColor: "black",
   strokeDash: "solid",

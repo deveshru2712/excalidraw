@@ -233,6 +233,7 @@ const strokeSettingConfig = {
       },
     ],
   },
+  pan: {},
 };
 
 export default function ToolSettingMenu() {
