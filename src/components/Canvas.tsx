@@ -401,8 +401,8 @@ export default function Canvas() {
           storeRef.current.strokeWidth
         );
         ctxRef.current.strokeRect(
-          rectangelElementSnapShotRef.current.x,
-          rectangelElementSnapShotRef.current.y,
+          rectangelElementSnapShotRef.current.x + panningOffset.current.x,
+          rectangelElementSnapShotRef.current.y + panningOffset.current.y,
           w,
           h
         );
@@ -432,7 +432,13 @@ export default function Canvas() {
         );
 
         ctx.beginPath();
-        ctx.arc(center.x, center.y, radius, 0, Math.PI * 2);
+        ctx.arc(
+          center.x + panningOffset.current.x,
+          center.y + panningOffset.current.y,
+          radius,
+          0,
+          Math.PI * 2
+        );
         ctx.stroke();
         ctx.setLineDash([]);
       } else if (tool === "pan") {
