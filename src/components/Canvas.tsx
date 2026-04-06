@@ -231,20 +231,31 @@ export default function Canvas() {
     if (!canvas) return;
 
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = window.innerWidth * dpr;
-    canvas.height = window.innerHeight * dpr;
-    canvas.style.width = `${window.innerWidth}px`;
-    canvas.style.height = `${window.innerHeight}px`;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    function resizeCanvas() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
 
-    ctx.scale(dpr, dpr);
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.strokeStyle = "black";
-    ctxRef.current = ctx;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      ctx.scale(dpr, dpr);
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = "black";
+      ctxRef.current = ctx;
+
+      redraw();
+    }
+
+    resizeCanvas();
+
+    window.addEventListener("resize", resizeCanvas);
+    return () => window.removeEventListener("resize", resizeCanvas);
   }, []);
 
   const threshold = 8;
