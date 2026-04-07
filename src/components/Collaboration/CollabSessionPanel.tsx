@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Copy, Users, X } from 'lucide-react';
 import { nanoid } from 'nanoid';
+import { Link } from 'react-router';
 
 import Button from '@/components/ui/button';
 import {
@@ -34,9 +35,10 @@ export default function CollabSessionPanel({
         }, 3000);
     };
 
-    const roomId = nanoid();
+    const roomId = useState(() => nanoid())[0];
 
-    const roomUrl = `localhost:5173` + roomId;
+    const roomPath = `/room/${roomId}`;
+    const roomUrl = `localhost:5173${roomPath}`;
 
     if (!isOpen) return;
 
@@ -143,8 +145,17 @@ export default function CollabSessionPanel({
                 </CardContent>
 
                 <CardFooter>
-                    {/* route user to room/:roomId */}
-                    <Button className="w-full">Start Drawing</Button>
+                    <Link
+                        to={roomPath}
+                        onClick={() => {
+                            localStorage.removeItem('drawing-store');
+                            localStorage.setItem('isRoomOwner', 'true');
+                            localStorage.setItem('ownerRoomId', roomId);
+                        }}
+                        className="w-full rounded-sm bg-black py-1 text-center font-medium text-white hover:bg-black/90"
+                    >
+                        Start Drawing
+                    </Link>
                 </CardFooter>
             </Card>
         </div>
