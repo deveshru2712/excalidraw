@@ -64,8 +64,20 @@ io.on('connection', (socket) => {
         socket.leave(data.roomId);
     });
 
+    // for real time updates
     socket.on('element:preview', (data: PreviewPayload) => {
         socket.to(data.roomId).emit('element:preview', data);
+    });
+
+    // admin sync
+    socket.on('sync-canvas', (data: SyncEventPayload) => {
+        socket.to(data.roomId).emit('canvas-synced', data);
+    });
+
+    // client request to admin to sync
+    socket.on('req-sync', (roomId: string) => {
+        console.log('request', roomId);
+        socket.to(roomId).emit('request-sync');
     });
 
     // closing the room -> admin user

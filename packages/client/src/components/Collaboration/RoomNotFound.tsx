@@ -64,8 +64,8 @@ export default function RoomNotFound() {
 
                     <div className="bg-muted h-1 w-full overflow-hidden rounded-full">
                         <div
-                            className="bg-primary h-full transition-all duration-1000"
-                            style={{ width: `${((5 - counter) / 5) * 100}%` }}
+                            className="bg-primary ml-auto h-full transition-all duration-1000"
+                            style={{ width: `${(counter / 5) * 100}%` }}
                         />
                     </div>
                 </CardFooter>

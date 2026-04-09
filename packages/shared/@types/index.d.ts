@@ -70,6 +70,15 @@ interface PushEventPayload {
     elements: DrawingElement[];
 }
 
+interface SyncEventPayload {
+    roomId: string;
+    elements: DrawingElement[];
+}
+
+interface RequestSyncEventPayload {
+    roomId: string;
+}
+
 interface PencilPreviewPayload {
     roomId: string;
     strokeId: string;

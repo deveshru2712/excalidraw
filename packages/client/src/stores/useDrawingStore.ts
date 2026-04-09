@@ -11,6 +11,7 @@ interface DrawingStoreState {
 }
 
 interface DrawingStoreAction {
+    syncCanvas: (element: DrawingElement[]) => void;
     addElement: (element: DrawingElement) => void;
     removeElements: (elementIds: string[]) => void;
     undo: () => void;
@@ -41,6 +42,10 @@ export const useDrawingStore = create<DrawingStoreType>()(
             setZoomLevel: (lvl) => set({ zoomLevel: lvl }),
             setIsPanning: (isPanning) => {
                 set({ isPanning });
+            },
+            // total sync
+            syncCanvas: (elements) => {
+                set({ elements });
             },
             addElement: (element) => {
                 const previous = get().elements;
