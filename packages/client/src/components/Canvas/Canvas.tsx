@@ -168,33 +168,33 @@ export default function Canvas() {
     }, [toolStore.tool]);
 
     useEffect(() => {
-        storeRef.current = {
-            tool: toolStore.tool,
-            elements: drawingStore.elements,
-            addElement: drawingStore.addElement,
-            removeElement: drawingStore.removeElements,
-            updateElement: drawingStore.updateElement,
-            pushToUndoStack: drawingStore.pushToUndoStack,
-            isPanning: drawingStore.isPanning,
-            setIsPanning: drawingStore.setIsPanning,
-            strokeColor: toolStore.strokeColor,
-            strokeWidth: toolStore.strokeWidth,
-            strokeDash: toolStore.strokeDash,
-            fontSize: toolStore.fontSize,
-        };
+        storeRef.current.tool = toolStore.tool;
+        storeRef.current.strokeColor = toolStore.strokeColor;
+        storeRef.current.strokeWidth = toolStore.strokeWidth;
+        storeRef.current.strokeDash = toolStore.strokeDash;
+        storeRef.current.fontSize = toolStore.fontSize;
     }, [
         toolStore.tool,
-        drawingStore.elements,
-        drawingStore.addElement,
-        drawingStore.removeElements,
-        drawingStore.updateElement,
-        drawingStore.pushToUndoStack,
-        drawingStore.isPanning,
-        drawingStore.setIsPanning,
         toolStore.strokeColor,
         toolStore.strokeWidth,
         toolStore.strokeDash,
         toolStore.fontSize,
+    ]);
+
+    useEffect(() => {
+        storeRef.current.isPanning = drawingStore.isPanning;
+        storeRef.current.setIsPanning = drawingStore.setIsPanning;
+        storeRef.current.addElement = drawingStore.addElement;
+        storeRef.current.removeElement = drawingStore.removeElements;
+        storeRef.current.updateElement = drawingStore.updateElement;
+        storeRef.current.pushToUndoStack = drawingStore.pushToUndoStack;
+    }, [
+        drawingStore.isPanning,
+        drawingStore.setIsPanning,
+        drawingStore.addElement,
+        drawingStore.removeElements,
+        drawingStore.updateElement,
+        drawingStore.pushToUndoStack,
     ]);
 
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
