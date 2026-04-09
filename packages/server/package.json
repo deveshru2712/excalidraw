@@ -1,25 +1,25 @@
 {
-  "name": "@excalidraw-clone/server",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "bun run --hot index.ts"
-  },
-  "devDependencies": {
-    "@types/bun": "latest",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.6"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@excalidraw-clone/shared": "workspace:*",
-    "@socket.io/bun-engine": "^0.1.0",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.1",
-    "express": "^5.2.1",
-    "socket.io": "^4.8.3"
-  }
+    "name": "@excalidraw-clone/server",
+    "module": "src/index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "bun run --hot ./src/index.ts"
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.6"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "dependencies": {
+        "@excalidraw-clone/shared": "workspace:*",
+        "@socket.io/bun-engine": "^0.1.0",
+        "cors": "^2.8.6",
+        "dotenv": "^17.4.1",
+        "express": "^5.2.1",
+        "socket.io": "^4.8.3"
+    }
 }
