@@ -288,7 +288,22 @@ export default function CollaborationCanvas({
                 fontSize: storeRef.current.fontSize,
                 content: activeInputRef.current.value,
             });
+
+            const addElementData: AddEventPayload = {
+                roomId,
+                element: {
+                    id,
+                    type: 'text',
+                    point: { x, y },
+                    strokeColor,
+                    fontSize: storeRef.current.fontSize,
+                    content: activeInputRef.current.value,
+                },
+            };
+            // emit event to add text
+            socket.emit('element:add', addElementData);
         }
+
         activeInputRef.current?.remove();
         activeInputRef.current = null;
     }, [toolStore.tool]);
@@ -543,6 +558,22 @@ export default function CollaborationCanvas({
                             fontSize: storeRef.current.fontSize,
                             content: inputElem.value,
                         });
+
+                        const addElementData: AddEventPayload = {
+                            roomId,
+                            element: {
+                                id,
+                                type: 'text',
+                                point: { x, y },
+                                strokeColor,
+                                fontSize: storeRef.current.fontSize,
+                                content: inputElem.value,
+                            },
+                        };
+
+                        // emit event to add text
+                        socket.emit('element:add', addElementData);
+
                         document.body.removeChild(inputElem);
                         activeInputPositionRef.current.x = 0;
                         activeInputPositionRef.current.y = 0;
