@@ -37,6 +37,63 @@ export default function Canvas() {
     // for zooming
     const zoomLevelRef = useRef<number>(1);
 
+    const storeRef = useRef({
+        tool: toolStore.tool,
+        elements: drawingStore.elements,
+        addElement: drawingStore.addElement,
+        removeElement: drawingStore.removeElements,
+        updateElement: drawingStore.updateElement,
+        pushToUndoStack: drawingStore.pushToUndoStack,
+        isPanning: drawingStore.isPanning,
+        setIsPanning: drawingStore.setIsPanning,
+        strokeColor: toolStore.strokeColor,
+        strokeWidth: toolStore.strokeWidth,
+        strokeDash: toolStore.strokeDash,
+        fontSize: toolStore.fontSize,
+    });
+
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+    const isActive = useRef(false);
+    const currentPoints = useRef<Point[]>([]);
+    const lastPoint = useRef({ x: 0, y: 0 });
+    const lastMid = useRef({ x: 0, y: 0 });
+
+    useEffect(() => {
+        storeRef.current.tool = toolStore.tool;
+        storeRef.current.strokeColor = toolStore.strokeColor;
+        storeRef.current.strokeWidth = toolStore.strokeWidth;
+        storeRef.current.strokeDash = toolStore.strokeDash;
+        storeRef.current.fontSize = toolStore.fontSize;
+    }, [
+        toolStore.tool,
+        toolStore.strokeColor,
+        toolStore.strokeWidth,
+        toolStore.strokeDash,
+        toolStore.fontSize,
+    ]);
+
+    useEffect(() => {
+        storeRef.current.isPanning = drawingStore.isPanning;
+        storeRef.current.setIsPanning = drawingStore.setIsPanning;
+        storeRef.current.addElement = drawingStore.addElement;
+        storeRef.current.removeElement = drawingStore.removeElements;
+        storeRef.current.updateElement = drawingStore.updateElement;
+        storeRef.current.pushToUndoStack = drawingStore.pushToUndoStack;
+    }, [
+        drawingStore.isPanning,
+        drawingStore.setIsPanning,
+        drawingStore.addElement,
+        drawingStore.removeElements,
+        drawingStore.updateElement,
+        drawingStore.pushToUndoStack,
+    ]);
+
+    useEffect(() => {
+        storeRef.current.elements = elements;
+        redraw();
+    }, [elements]);
+
     useEffect(() => {
         if (!zoomDirection) return;
 
@@ -132,21 +189,6 @@ export default function Canvas() {
         ctx.restore();
     }
 
-    const storeRef = useRef({
-        tool: toolStore.tool,
-        elements: drawingStore.elements,
-        addElement: drawingStore.addElement,
-        removeElement: drawingStore.removeElements,
-        updateElement: drawingStore.updateElement,
-        pushToUndoStack: drawingStore.pushToUndoStack,
-        isPanning: drawingStore.isPanning,
-        setIsPanning: drawingStore.setIsPanning,
-        strokeColor: toolStore.strokeColor,
-        strokeWidth: toolStore.strokeWidth,
-        strokeDash: toolStore.strokeDash,
-        fontSize: toolStore.fontSize,
-    });
-
     // add text if the user prematurely switches tool
     useEffect(() => {
         const { addElement, strokeColor } = storeRef.current;
@@ -166,43 +208,6 @@ export default function Canvas() {
         activeInputRef.current?.remove();
         activeInputRef.current = null;
     }, [toolStore.tool]);
-
-    useEffect(() => {
-        storeRef.current.tool = toolStore.tool;
-        storeRef.current.strokeColor = toolStore.strokeColor;
-        storeRef.current.strokeWidth = toolStore.strokeWidth;
-        storeRef.current.strokeDash = toolStore.strokeDash;
-        storeRef.current.fontSize = toolStore.fontSize;
-    }, [
-        toolStore.tool,
-        toolStore.strokeColor,
-        toolStore.strokeWidth,
-        toolStore.strokeDash,
-        toolStore.fontSize,
-    ]);
-
-    useEffect(() => {
-        storeRef.current.isPanning = drawingStore.isPanning;
-        storeRef.current.setIsPanning = drawingStore.setIsPanning;
-        storeRef.current.addElement = drawingStore.addElement;
-        storeRef.current.removeElement = drawingStore.removeElements;
-        storeRef.current.updateElement = drawingStore.updateElement;
-        storeRef.current.pushToUndoStack = drawingStore.pushToUndoStack;
-    }, [
-        drawingStore.isPanning,
-        drawingStore.setIsPanning,
-        drawingStore.addElement,
-        drawingStore.removeElements,
-        drawingStore.updateElement,
-        drawingStore.pushToUndoStack,
-    ]);
-
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
-    const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
-    const isActive = useRef(false);
-    const currentPoints = useRef<Point[]>([]);
-    const lastPoint = useRef({ x: 0, y: 0 });
-    const lastMid = useRef({ x: 0, y: 0 });
 
     function focusContent() {
         if (!isPanning) return;
@@ -609,10 +614,6 @@ export default function Canvas() {
     useEffect(() => {
         if (isPanning) focusContent();
     }, [isPanning]);
-
-    useEffect(() => {
-        redraw();
-    }, [elements]);
 
     return <canvas ref={canvasRef} className="cursor-none bg-neutral-100" />;
 }
